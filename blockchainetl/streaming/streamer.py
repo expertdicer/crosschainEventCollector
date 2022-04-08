@@ -28,7 +28,7 @@ import time
 from blockchainetl.file_utils import smart_open
 from blockchainetl.streaming.streamer_adapter_stub import StreamerAdapterStub
 from configs.blockchain_etl_config import BlockchainEtlConfig
-from ethereumetl.streaming.streaming_exporter_creator import create_steaming_exporter
+from ethereumetl.streaming.streaming_exporter_creator import create_steaming_lending_log_exporter
 
 
 class Streamer:
@@ -57,7 +57,7 @@ class Streamer:
         self.retry_errors = retry_errors
         self.pid_file = pid_file
         self.stream_id = stream_id
-        self.exporter = create_steaming_exporter(output, stream_id, db_prefix)
+        self.exporter = create_steaming_lending_log_exporter(output, stream_id, db_prefix)
 
         if self.start_block is not None or not os.path.isfile(self.last_synced_block_file):
             init_last_synced_block_file((self.start_block or 0) - 1, self.last_synced_block_file)

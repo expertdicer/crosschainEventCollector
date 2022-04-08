@@ -54,15 +54,13 @@ from configs.config import Networks, Contracts
               help='The list of contract addresses to filter by.')
 @click.option('--log-file', default=None, show_default=True, type=str, help='Log file')
 @click.option('--pid-file', default=None, show_default=True, type=str, help='pid file')
-@click.option('--event-collector-id', default="lending_events",
+@click.option('--event-collector-id', default="events",
               show_default=True, type=str, help='event collector id')
-@click.option('--transaction-collector-id', default="transaction_collector_id",
-              show_default=True, type=str, help='transaction collector id')
 def stream_event_collector(last_synced_block_file, lag, network, output,
                            start_block=None, end_block=None,
                            period_seconds=10, collector_batch_size=96, streamer_batch_size=960, max_workers=5,
-                           contract_names=None, log_file=None, pid_file=None, event_collector_id="lending_events",
-                           transaction_collector_id='transaction_collector_id'):
+                           contract_names=None, log_file=None, pid_file=None, event_collector_id="events",
+                            ):
     """Collect token transfer events."""
     logging_basic_config(filename=log_file)
     logger = logging.getLogger('Streamer')
@@ -79,8 +77,7 @@ def stream_event_collector(last_synced_block_file, lag, network, output,
         item_exporter=create_steaming_lending_log_exporter(output=output, collector_id=event_collector_id,
                                                            db_prefix=Networks.networks[network]['db_prefix']),
         batch_size=collector_batch_size,
-        max_workers=max_workers,
-        collector_id=transaction_collector_id
+        max_workers=max_workers
     )
     streamer = Streamer(
         blockchain_streamer_adapter=streamer_adapter,

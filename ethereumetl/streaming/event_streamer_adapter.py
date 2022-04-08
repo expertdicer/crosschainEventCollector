@@ -7,7 +7,6 @@ from ethereumetl.jobs.export_event_job import ExportEvent
 from configs.config import Networks, Contracts
 
 
-
 class EventStreamerAdapter:
     def __init__(
             self,
@@ -16,17 +15,15 @@ class EventStreamerAdapter:
             provider,
             item_exporter,
             batch_size=96,
-            max_workers=8,
-            collector_id='transaction_collector_id'):
+            max_workers=8
+    ):
         self.network = network
         self.item_exporter = None
         self.contract_names = contract_names
-        self.collector_id = collector_id
         self.w3 = Web3(provider)
         self.w3.middleware_onion.inject(geth_poa_middleware, layer=0)
         self.batch_size = batch_size
         self.max_workers = max_workers
-        self.collector_id = collector_id
         self.item_exporter = item_exporter
         """
         log performance realtime for mr.dat
