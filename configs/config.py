@@ -50,7 +50,6 @@ class Contracts:
             'rinkeby': "0x98ee4AbDb529668fcc7D9291D61CAe4B64DE3aBa"
         },
         'abi': MULTI_SIG_WALLET_FACTORY,
-        'start_block': 0
     }
     TravaToken = {
         'addresses': {
@@ -59,7 +58,6 @@ class Contracts:
             'rinkeby': "0xB25719D8408696872ff38c445290fab0F117d201"
         },
         'abi': MULTI_SIG_WALLET,
-        'start_block': 0
     }
     Recoder = {
         'addresses': {
@@ -68,7 +66,6 @@ class Contracts:
             'rinkeby': "0xeAb6AE2d09051ACb6876CD1bc608202E2fd7fb6b"
         },
         'abi': RECORDER,
-        'start_block': 0
     }
     contracts = {
         'multi_sig_factory': MultiSigFactory,
