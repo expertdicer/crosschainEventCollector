@@ -256,14 +256,9 @@ RECORDER = json.loads('''
     {
       "inputs": [
         {
-          "internalType": "bytes8[]",
-          "name": "chainID",
-          "type": "bytes8[]"
-        },
-        {
-          "internalType": "address[]",
+          "internalType": "address",
           "name": "add",
-          "type": "address[]"
+          "type": "address"
         }
       ],
       "name": "getMessageHash",
@@ -280,14 +275,9 @@ RECORDER = json.loads('''
     {
       "inputs": [
         {
-          "internalType": "bytes8",
-          "name": "chainID",
-          "type": "bytes8"
-        },
-        {
-          "internalType": "address",
+          "internalType": "address[]",
           "name": "add",
-          "type": "address"
+          "type": "address[]"
         }
       ],
       "name": "getMessageHash",
@@ -469,11 +459,6 @@ RECORDER = json.loads('''
     },
     {
       "inputs": [
-        {
-          "internalType": "bytes8",
-          "name": "chainID",
-          "type": "bytes8"
-        },
         {
           "internalType": "bytes",
           "name": "pubk",

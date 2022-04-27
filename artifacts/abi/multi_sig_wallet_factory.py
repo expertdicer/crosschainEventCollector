@@ -1,30 +1,45 @@
-# MIT License
-#
-# Copyright (c) 2018 Evgeny Medvedev, evge.medvedev@gmail.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-
 import json
 
 MULTI_SIG_WALLET_FACTORY = json.loads('''
 [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address[]",
+          "name": "address1",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "address2",
+          "type": "address"
+        }
+      ],
+      "name": "AddUser",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address[]",
+          "name": "addresses",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes[]",
+          "name": "signature",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "ConnectUser",
+      "type": "event"
+    },
     {
       "anonymous": false,
       "inputs": [
@@ -45,12 +60,32 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
       "type": "event"
     },
     {
+      "anonymous": false,
       "inputs": [
         {
-          "internalType": "bytes8[]",
-          "name": "chainID",
-          "type": "bytes8[]"
+          "indexed": false,
+          "internalType": "address",
+          "name": "userRemove",
+          "type": "address"
         },
+        {
+          "indexed": false,
+          "internalType": "address[]",
+          "name": "addresses",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes[]",
+          "name": "signature",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "DeleteUser",
+      "type": "event"
+    },
+    {
+      "inputs": [
         {
           "internalType": "address[]",
           "name": "addresses",
@@ -110,16 +145,6 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
           "type": "uint256"
         },
         {
-          "internalType": "bytes8[]",
-          "name": "chainID",
-          "type": "bytes8[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "addresses",
-          "type": "address[]"
-        },
-        {
           "internalType": "bytes[]",
           "name": "signature",
           "type": "bytes[]"
@@ -138,39 +163,6 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
           "type": "address"
         }
       ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "removeX",
-          "type": "address"
-        },
-        {
-          "internalType": "bytes8[]",
-          "name": "chainID",
-          "type": "bytes8[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "addresses",
-          "type": "address[]"
-        },
-        {
-          "internalType": "bytes[]",
-          "name": "signature",
-          "type": "bytes[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "timestamp",
-          "type": "uint256"
-        }
-      ],
-      "name": "deleteAddress",
-      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -253,14 +245,9 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
     {
       "inputs": [
         {
-          "internalType": "bytes8[]",
-          "name": "chainID",
-          "type": "bytes8[]"
-        },
-        {
-          "internalType": "address[]",
+          "internalType": "address",
           "name": "add",
-          "type": "address[]"
+          "type": "address"
         }
       ],
       "name": "getMessageHash",
@@ -277,14 +264,9 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
     {
       "inputs": [
         {
-          "internalType": "bytes8",
-          "name": "chainID",
-          "type": "bytes8"
-        },
-        {
-          "internalType": "address",
+          "internalType": "address[]",
           "name": "add",
-          "type": "address"
+          "type": "address[]"
         }
       ],
       "name": "getMessageHash",
@@ -454,11 +436,6 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
     {
       "inputs": [
         {
-          "internalType": "bytes8",
-          "name": "chainID",
-          "type": "bytes8"
-        },
-        {
           "internalType": "bytes",
           "name": "pubk",
           "type": "bytes"
@@ -477,11 +454,6 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
     },
     {
       "inputs": [
-        {
-          "internalType": "bytes8[]",
-          "name": "chainID",
-          "type": "bytes8[]"
-        },
         {
           "internalType": "address[]",
           "name": "addresses",

@@ -106,5 +106,6 @@ def get_contracts(contracts):
     names = list(Contracts.contracts.keys())
     for contract in contracts:
         if contract == 'all':
+            print(names)
             return names
     return list(contracts)

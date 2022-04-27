@@ -1,9 +1,12 @@
 from data_storage.memory_storage import MemoryStorage
 import logging
 from artifacts.abi.lending_pool_abi import LENDING_POOL_ABI
+from artifacts.abi.recorder import RECORDER
+from artifacts.abi.multi_sig_wallet_factory import MULTI_SIG_WALLET_FACTORY
 from ethereumetl.executors.batch_work_executor import BatchWorkExecutor
 from blockchainetl.jobs.base_job import BaseJob
 from ethereumetl.mappers.receipt_lending_log_mapper import EthReceiptLendingLogMapper
+from configs.config import Contracts
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,17 +26,23 @@ class ExportEvent(BaseJob):
                  max_workers,
                  item_exporter,
                  web3,
-                 contract_addresses,
+                 contract_name,
+                 network,
                  abi=LENDING_POOL_ABI,):
         self.web3 = web3
         self.abi = abi
         self.item_exporter = item_exporter
         self.start_block = start_block
         self.end_block = end_block
-        self.contract_addresses = contract_addresses
+        self.contract_name = contract_name
+        print("contract_name", self.contract_name )
+        self.network = network
+        self.contract_addresses=[Contracts.contracts[contract_name]['addresses'][network]]
         self.batch_work_executor = BatchWorkExecutor(batch_size, max_workers)
         self.receipt_log = EthReceiptLendingLogMapper()
         self.localstorage = MemoryStorage.getInstance()
+        self.private_key = '34eae52835122ace28aa1aa77afda645527d90c7ba16b106b991e5de3c22fdc3'
+        self.sender = '0x716CC3A781E39ef20375d1B2eCc39A8Bd6b2Efcf'
 
     def _start(self):
         self.event_data = []
@@ -86,6 +95,21 @@ class ExportEvent(BaseJob):
                 eth_event_dict = self.receipt_log.eth_event_to_dict(eth_event)
                 transaction_hash = eth_event_dict.get('transaction_hash')
                 event_type = eth_event_dict.get('event_type')
+                # if event_type == "MERGEREQUESTCREATED" and self.contract_name == 'recoder':
+                #     MultiSigFactory = self.web3.contract(address = Contracts.MultiSigFactory['addresses'][self.network], abi = MULTI_SIG_WALLET_FACTORY)
+                #     MultiSigFactory_tx = MultiSigFactory.functions.updaterConnectAddress(
+                #         address,
+                #         address[],
+                #     ).buildTransaction({
+                #         'chainId' : x,
+                #         'gas': 300000,
+                #         'maxFeePerGas': self.web3.toWei('2', 'gwei'),
+                #         'maxPriorityFeePerGas': self.web3.toWei('1', 'gwei'),
+                #         'nonce': self.web3.eth.get_transaction_count(Contracts.MultiSigFactory['addresses'][self.network]) ,
+                #     })
+                #     signed_txn = self.web3.eth.account.sign_transaction(MultiSigFactory_tx, private_key=self.private_key)
+                #     self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)  
+                #     print("Transacion hash:" , self.web3.toHex(w3.keccak(signed_txn.rawTransaction)))
                 block_number = eth_event_dict.get('block_number')
                 log_index = eth_event_dict.get('log_index')
                 eth_event_dict['_id'] = f"transaction_{transaction_hash}_{event_type}_{block_number}_{log_index}"

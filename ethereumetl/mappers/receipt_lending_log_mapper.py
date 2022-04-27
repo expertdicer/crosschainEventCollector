@@ -68,10 +68,13 @@ class EthReceiptLendingLogMapper(object):
         return receipt_log
 
     def decode_data_by_type(self, data, type):
+        print(data, type)
         if self.is_integers(type):
-            return hex_to_dec(data)
+            return str(hex_to_dec(data))
         elif type == "address":
-            return word_to_address(data)
+            return str(word_to_address(data))
+        elif type == "bool":
+            return bool(int(hex_to_dec(data)))
         else:
             return data
 
@@ -79,36 +82,81 @@ class EthReceiptLendingLogMapper(object):
         return type == "uint256" or type == "uint128" or type == "uint64" or type == "uint32" or type == "uint16" or type == "uint8" or type == "uint" \
                or type == "int256" or type == "init128" or type == "init64" or type == "init32" or type == "init16" or type == "init8" or type == "init"
 
-    def extract_event_from_log(self, receipt_log, event_subscriber):
+    def extract_event_from_log(self,receipt_log, event_subscriber):
         topics = receipt_log.topics
+        print("topics", topics)
         if topics is None or len(topics) < 1:
             logger.warning("Topics are empty in log {} of transaction {}".format(receipt_log.log_index,
-                                                                                 receipt_log.transaction_hash))
+                                                                                receipt_log.transaction_hash))
             return None
         if event_subscriber.topic_hash == topics[0]:
-            # Handle unindexed event fields
-            topics_with_data = topics + split_to_words(receipt_log.data)
             list_params_in_order = event_subscriber.list_params_in_order
-            # if the number of topics and fields in data part != len(list_params_in_order), then it's a weird event
-            num_params = len(list_params_in_order)
-            topics_with_data = topics_with_data[1:]
-            if len(topics_with_data) != num_params:
-                logger.warning("The number of topics and data parts is not equal to {} in log {} of transaction {}"
-                               .format(str(num_params), receipt_log.log_index, receipt_log.transaction_hash))
+            list_params_indexed = [param for param in list_params_in_order if param.get('indexed') == True]
+            list_params_unindexed = [param for param in list_params_in_order if param.get('indexed') == False]
+            
+            num_params_index = len(list_params_indexed)
+            num_params_unindex = len(list_params_unindexed)
+        
+            # Handle indexed event fields
+            topics = topics[1:]
+            if len(topics) != (num_params_index):
+                logger.warning("The number of topics parts is not equal to {} in log {} of transaction {}"
+                            .format(str(num_params_index), receipt_log.log_index, receipt_log.transaction_hash))
                 return None
-
+            
             event = EthEvent()
             event.contract_address = to_normalized_address(receipt_log.address)
             event.transaction_hash = receipt_log.transaction_hash
             event.log_index = receipt_log.log_index
             event.block_number = receipt_log.block_number
             event.event_type = event_subscriber.name
-            for i in range(num_params):
-                param_i = list_params_in_order[i]
+            for i in range(num_params_index):
+                param_i = list_params_indexed[i]
                 name = param_i.get("name")
                 type = param_i.get("type")
-                data = topics_with_data[i]
-                event.params[name] = str(self.decode_data_by_type(data, type))
+                data = topics[i]
+                event.params[name] = self.decode_data_by_type(data, type)
+
+            # Handle unindexed event fields
+            event_data = split_to_words(receipt_log.data)
+            # if the number of topics and fields in data part != len(list_params_unindexed), then it's a weird event
+            if len(event_data) != num_params_unindex:
+                element_count = 0       # Count total element in array param and param
+                for i in range(num_params_unindex):
+                    element_count += 1
+                    param_i = list_params_unindexed[i]
+                    name = param_i.get("name")
+                    type = param_i.get("type")
+                    data = event_data[i]
+
+                    # Hanlde params is array
+                    print(type)
+                    if type.endswith(']'):
+                        if type.endswith('[]'):
+                            element_count += 1
+                            event.params[name] = []
+                            element_type = type.split('[')[0]
+                            offset = int(int(self.decode_data_by_type(data, "uint256")) / 32)
+                            length = int(self.decode_data_by_type(event_data[offset], "uint256"))
+
+                            for index in range(offset+1, offset+length+1):
+                                event.params[name].append(self.decode_data_by_type(event_data[index], element_type))
+                                element_count += 1
+                    else:
+                        event.params[name] = self.decode_data_by_type(data, type)
+
+                if len(event_data) != element_count:
+                    logger.warning("The number of data parts is not equal to {} in log {} of transaction {}"
+                                .format(str(num_params_unindex), receipt_log.log_index, receipt_log.transaction_hash))
+                    return None
+            else:
+                for i in range(num_params_unindex):
+                    param_i = list_params_unindexed[i]
+                    name = param_i.get("name")
+                    type = param_i.get("type")
+                    data = event_data[i]
+                    event.params[name] = self.decode_data_by_type(data, type)
+                    
             return event
 
         return None

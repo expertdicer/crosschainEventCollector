@@ -45,24 +45,24 @@ class SIZES:
 class Contracts:
     MultiSigFactory = {
         'addresses': {
-            'kovan': "0xCDA456FEf9aDCb651CcD58Ed6687c0e96FB3f02F",
-            'ropsten': "0xCDA456FEf9aDCb651CcD58Ed6687c0e96FB3f02F",
+            'kovan': "0x4cffae6847DF4Fe1710cb9Ac7aCc943c82748064",
+            'ropsten': "0xc8c7ACD7686721da8CefCAfdccF60D73BD6e477C",
             'rinkeby': "0x98ee4AbDb529668fcc7D9291D61CAe4B64DE3aBa"
         },
         'abi': MULTI_SIG_WALLET_FACTORY,
     }
     TravaToken = {
         'addresses': {
-            'kovan': "0x0D176Cb7D9CD4838173BC35e093d7c3eC0A10CA8",
-            'ropsten': "0x0D176Cb7D9CD4838173BC35e093d7c3eC0A10CA8",
+            'kovan': "0xd0dFaC175FD0E50120b3407597530Fb8283a9e4c",
+            'ropsten': "0xa2f7968ae4c4Bd434e7Ee2F6d9C552fE3061E0FE",
             'rinkeby': "0xB25719D8408696872ff38c445290fab0F117d201"
         },
         'abi': MULTI_SIG_WALLET,
     }
     Recoder = {
         'addresses': {
-            'kovan': "0xDA9CF05f45A309d4fFdc85188F11c04F4D772640",
-            'ropsten': "0xDA9CF05f45A309d4fFdc85188F11c04F4D772640",
+            'kovan': "0xd0dD2b7f0a287DE5383Fc3776bF91F071a10332A",
+            'ropsten': "0xA8BaB078Db497C68920d45c64D68733f4bf6A873",
             'rinkeby': "0xeAb6AE2d09051ACb6876CD1bc608202E2fd7fb6b"
         },
         'abi': RECORDER,

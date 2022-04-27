@@ -28,7 +28,7 @@ class MongodbEventExporter(StreamingExporterInterface):
             mongo_db_str = MongoDBConfig.DATABASE
         self.mongo_db = self.mongo[mongo_db_str]
         self.mongo_collectors = self.mongo_db[MongoDBConfig.COLLECTORS]
-        self.event = self.mongo_db[MongoDBConfig.EVENTS]
+        self.lending_event = self.mongo_db[MongoDBConfig.EVENTS]
         self.collector_id = collector_id
         self.local_storage = MemoryStoragePerformance.getInstance()
 
@@ -70,7 +70,7 @@ class MongodbEventExporter(StreamingExporterInterface):
         bulk_operations = [UpdateOne({'_id': data['_id']}, {"$set": data}, upsert=True) for data in operations_data]
         logger.info("Updating into events ........")
         try:
-            self.event.bulk_write(bulk_operations)
+            self.mongo_db[MongoDBConfig.LENDING_EVENTS].bulk_write(bulk_operations)
         except Exception as bwe:
             logger.error(f"Error: {bwe}")
         end = time.time()
@@ -78,7 +78,7 @@ class MongodbEventExporter(StreamingExporterInterface):
 
     def export_token_transfer(self, item):
         try:
-            self.event.insert_one(item)
+            self.lending_event.insert_one(item)
         except DuplicateKeyError:
             pass
 

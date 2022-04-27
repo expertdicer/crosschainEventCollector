@@ -55,7 +55,8 @@ class EventStreamerAdapter:
             web3=self.w3,
             item_exporter=self.item_exporter,
             max_workers=self.max_workers,
-            contract_addresses=[Contracts.contracts[contract_name]['addresses'][self.network]],
+            contract_name = contract_name,
+            network = self.network,
             abi=Contracts.contracts[contract_name]['abi'],
         )
         job.run()
