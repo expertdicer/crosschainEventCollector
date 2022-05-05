@@ -8,25 +8,6 @@ MULTI_SIG_WALLET_FACTORY = json.loads('''
         {
           "indexed": false,
           "internalType": "address[]",
-          "name": "address1",
-          "type": "address[]"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "address2",
-          "type": "address"
-        }
-      ],
-      "name": "AddUser",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address[]",
           "name": "addresses",
           "type": "address[]"
         },

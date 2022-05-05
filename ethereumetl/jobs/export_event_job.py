@@ -35,7 +35,6 @@ class ExportEvent(BaseJob):
         self.start_block = start_block
         self.end_block = end_block
         self.contract_name = contract_name
-        print("contract_name", self.contract_name )
         self.network = network
         self.contract_addresses=[Contracts.contracts[contract_name]['addresses'][network]]
         self.batch_work_executor = BatchWorkExecutor(batch_size, max_workers)

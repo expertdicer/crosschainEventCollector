@@ -45,25 +45,25 @@ class SIZES:
 class Contracts:
     MultiSigFactory = {
         'addresses': {
-            'kovan': "0x4cffae6847DF4Fe1710cb9Ac7aCc943c82748064",
-            'ropsten': "0xc8c7ACD7686721da8CefCAfdccF60D73BD6e477C",
-            'rinkeby': "0x98ee4AbDb529668fcc7D9291D61CAe4B64DE3aBa"
+            'kovan': "0x9aBF2D0Daa0BD252c0a0c542BBbB171877bffDee",
+            'ropsten': "0xE5d62b5597e453F97f1302399F94337df88d3F96",
+            'rinkeby': "0xE5d62b5597e453F97f1302399F94337df88d3F96"
         },
         'abi': MULTI_SIG_WALLET_FACTORY,
     }
     TravaToken = {
         'addresses': {
-            'kovan': "0xd0dFaC175FD0E50120b3407597530Fb8283a9e4c",
-            'ropsten': "0xa2f7968ae4c4Bd434e7Ee2F6d9C552fE3061E0FE",
-            'rinkeby': "0xB25719D8408696872ff38c445290fab0F117d201"
+            'kovan': "0x27E356837F9df025e8827D412c55a78b3A655bce",
+            'ropsten': "0x02cA24361754E5dF1B6B69BBf85C51AF16309896",
+            'rinkeby': "0x02cA24361754E5dF1B6B69BBf85C51AF16309896"
         },
         'abi': MULTI_SIG_WALLET,
     }
     Recoder = {
         'addresses': {
-            'kovan': "0xd0dD2b7f0a287DE5383Fc3776bF91F071a10332A",
-            'ropsten': "0xA8BaB078Db497C68920d45c64D68733f4bf6A873",
-            'rinkeby': "0xeAb6AE2d09051ACb6876CD1bc608202E2fd7fb6b"
+            'kovan': "0xc8c7ACD7686721da8CefCAfdccF60D73BD6e477C",
+            'ropsten': "0x6E3ef7F0410Ce0e0194614C6D276bA088981609E",
+            'rinkeby': "0x6E3ef7F0410Ce0e0194614C6D276bA088981609E"
         },
         'abi': RECORDER,
     }

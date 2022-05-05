@@ -68,7 +68,6 @@ class EthReceiptLendingLogMapper(object):
         return receipt_log
 
     def decode_data_by_type(self, data, type):
-        print(data, type)
         if self.is_integers(type):
             return str(hex_to_dec(data))
         elif type == "address":
@@ -84,7 +83,6 @@ class EthReceiptLendingLogMapper(object):
 
     def extract_event_from_log(self,receipt_log, event_subscriber):
         topics = receipt_log.topics
-        print("topics", topics)
         if topics is None or len(topics) < 1:
             logger.warning("Topics are empty in log {} of transaction {}".format(receipt_log.log_index,
                                                                                 receipt_log.transaction_hash))
@@ -123,25 +121,42 @@ class EthReceiptLendingLogMapper(object):
             if len(event_data) != num_params_unindex:
                 element_count = 0       # Count total element in array param and param
                 for i in range(num_params_unindex):
-                    element_count += 1
+                    element_count += 1          # Param lưu offset của mảng
                     param_i = list_params_unindexed[i]
                     name = param_i.get("name")
                     type = param_i.get("type")
                     data = event_data[i]
 
                     # Hanlde params is array
-                    print(type)
                     if type.endswith(']'):
                         if type.endswith('[]'):
-                            element_count += 1
                             event.params[name] = []
                             element_type = type.split('[')[0]
                             offset = int(int(self.decode_data_by_type(data, "uint256")) / 32)
                             length = int(self.decode_data_by_type(event_data[offset], "uint256"))
-
                             for index in range(offset+1, offset+length+1):
-                                event.params[name].append(self.decode_data_by_type(event_data[index], element_type))
-                                element_count += 1
+                                if type == "bytes[]":
+                                    offset_byte = int(int(self.decode_data_by_type(event_data[index], "uint256")) / 32)
+                                    offset_byte = offset + offset_byte + 1
+
+                                    length_byte = int(self.decode_data_by_type(event_data[offset_byte], "uint256"))
+                                    length_params = int(length_byte / 32) + 1
+
+                                    data_byte = ""
+                                    for index_byte in range(offset_byte+1, offset_byte+length_params+1):
+                                        data_temp = self.decode_data_by_type(event_data[index_byte], element_type)
+                                        data_byte = data_byte + data_temp[2:]
+                                        element_count += 1      # Param lưu giá trị phần tử byte
+
+                                    data_byte = "0x" + data_byte[:(length_byte*2)]
+                                    event.params[name].append(data_byte)
+
+                                    element_count += 1      # Param lưu offset của phần tử mảng byte
+                                else:
+                                    event.params[name].append(self.decode_data_by_type(event_data[index], element_type))
+
+                                element_count += 1     # Param lưu giá trị phần tử mảng
+                            element_count += 1    # Param lưu số phần tử mảng
                     else:
                         event.params[name] = self.decode_data_by_type(data, type)
 
